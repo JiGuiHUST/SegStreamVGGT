@@ -1,0 +1,119 @@
+[CLIP] city2-demo: 1,500,000 pts, 16 waypoints, center=[-0.01861727  0.16953486  1.0875037 ], r=0.828
+[DETECT] 7 objects in 1.0s
+  BUILDING 0.98 box=[982, 376, 342, 504]
+  BUILDING 0.97 box=[866, 222, 304, 450]
+  TREE     0.86 box=[750, 318, 142, 202]
+  TREE     0.79 box=[876, 432, 138, 202]
+  TREE     0.79 box=[686, 172, 140, 218]
+  VEHICLE  0.84 box=[804, 542, 26, 18]
+  PERSON   0.49 box=[974, 772, 26, 36]
+[HTTP] serving /data/luhangze/aic on 127.0.0.1:34355
+[CAPTURE] 1/1020  7.5s  (0.13 fps)
+[CAPTURE] 31/1020  27.9s  (1.11 fps)
+[CAPTURE] 61/1020  53.0s  (1.15 fps)
+[CAPTURE] 91/1020  77.6s  (1.17 fps)
+[CAPTURE] 121/1020  99.9s  (1.21 fps)
+[CAPTURE] 151/1020  123.3s  (1.22 fps)
+[CAPTURE] 181/1020  149.0s  (1.21 fps)
+[CAPTURE] 211/1020  175.7s  (1.20 fps)
+[CAPTURE] 241/1020  202.8s  (1.19 fps)
+[CAPTURE] 271/1020  230.4s  (1.18 fps)
+[CAPTURE] 301/1020  258.0s  (1.17 fps)
+[CAPTURE] 331/1020  286.1s  (1.16 fps)
+[CAPTURE] 361/1020  314.3s  (1.15 fps)
+[CAPTURE] 391/1020  342.5s  (1.14 fps)
+[CAPTURE] 421/1020  370.5s  (1.14 fps)
+[CAPTURE] 451/1020  398.0s  (1.13 fps)
+[CAPTURE] 481/1020  425.7s  (1.13 fps)
+[CAPTURE] 511/1020  453.5s  (1.13 fps)
+[CAPTURE] 541/1020  481.2s  (1.12 fps)
+[CAPTURE] 571/1020  509.2s  (1.12 fps)
+[CAPTURE] 601/1020  537.0s  (1.12 fps)
+[CAPTURE] 631/1020  564.7s  (1.12 fps)
+[CAPTURE] 661/1020  592.4s  (1.12 fps)
+[CAPTURE] 691/1020  621.5s  (1.11 fps)
+[CAPTURE] 721/1020  649.6s  (1.11 fps)
+[CAPTURE] 751/1020  677.6s  (1.11 fps)
+[CAPTURE] 781/1020  706.5s  (1.11 fps)
+[CAPTURE] 811/1020  734.7s  (1.10 fps)
+[CAPTURE] 841/1020  763.2s  (1.10 fps)
+[CAPTURE] 871/1020  791.7s  (1.10 fps)
+[CAPTURE] 901/1020  820.0s  (1.10 fps)
+[CAPTURE] 931/1020  846.9s  (1.10 fps)
+[CAPTURE] 961/1020  873.3s  (1.10 fps)
+[CAPTURE] 991/1020  900.4s  (1.10 fps)
+[CAPTURE] 1020/1020  926.6s  (1.10 fps)
+[CAPTURE] done in 926.9s -> /data/luhangze/aic/code_demo/frames/raw
+[COMPOSE] 1020 frames -> /data/luhangze/aic/code_demo/frames/final
+[COMPOSE] 1/1020  0.2s
+[COMPOSE] 61/1020  10.0s
+[COMPOSE] 121/1020  18.9s
+[COMPOSE] 181/1020  26.9s
+[COMPOSE] 241/1020  35.0s
+[COMPOSE] 301/1020  43.2s
+[COMPOSE] 361/1020  51.2s
+[COMPOSE] 421/1020  59.4s
+[COMPOSE] 481/1020  67.7s
+[COMPOSE] 541/1020  76.2s
+[COMPOSE] 601/1020  84.6s
+[COMPOSE] 661/1020  93.1s
+[COMPOSE] 721/1020  102.0s
+[COMPOSE] 781/1020  111.1s
+[COMPOSE] 841/1020  120.2s
+[COMPOSE] 901/1020  129.4s
+[COMPOSE] 961/1020  138.6s
+ffmpeg version 4.4.2-0ubuntu0.22.04.1 Copyright (c) 2000-2021 the FFmpeg developers
+  built with gcc 11 (Ubuntu 11.2.0-19ubuntu1)
+  configuration: --prefix=/usr --extra-version=0ubuntu0.22.04.1 --toolchain=hardened --libdir=/usr/lib/x86_64-linux-gnu --incdir=/usr/include/x86_64-linux-gnu --arch=amd64 --enable-gpl --disable-stripping --enable-gnutls --enable-ladspa --enable-libaom --enable-libass --enable-libbluray --enable-libbs2b --enable-libcaca --enable-libcdio --enable-libcodec2 --enable-libdav1d --enable-libflite --enable-libfontconfig --enable-libfreetype --enable-libfribidi --enable-libgme --enable-libgsm --enable-libjack --enable-libmp3lame --enable-libmysofa --enable-libopenjpeg --enable-libopenmpt --enable-libopus --enable-libpulse --enable-librabbitmq --enable-librubberband --enable-libshine --enable-libsnappy --enable-libsoxr --enable-libspeex --enable-libsrt --enable-libssh --enable-libtheora --enable-libtwolame --enable-libvidstab --enable-libvorbis --enable-libvpx --enable-libwebp --enable-libx265 --enable-libxml2 --enable-libxvid --enable-libzimg --enable-libzmq --enable-libzvbi --enable-lv2 --enable-omx --enable-openal --enable-opencl --enable-opengl --enable-sdl2 --enable-pocketsphinx --enable-librsvg --enable-libmfx --enable-libdc1394 --enable-libdrm --enable-libiec61883 --enable-chromaprint --enable-frei0r --enable-libx264 --enable-shared
+  libavutil      56. 70.100 / 56. 70.100
+  libavcodec     58.134.100 / 58.134.100
+  libavformat    58. 76.100 / 58. 76.100
+  libavdevice    58. 13.100 / 58. 13.100
+  libavfilter     7.110.100 /  7.110.100
+  libswscale      5.  9.100 /  5.  9.100
+  libswresample   3.  9.100 /  3.  9.100
+  libpostproc    55.  9.100 / 55.  9.100
+[mjpeg @ 0x5ce4dda58d80] EOI missing, emulating
+Input #0, image2, from '/data/luhangze/aic/code_demo/frames/final/final_%05d.jpg':
+  Duration: 00:00:34.00, start: 0.000000, bitrate: N/A
+  Stream #0:0: Video: mjpeg (Baseline), yuvj420p(pc, bt470bg/unknown/unknown), 1920x1080 [SAR 1:1 DAR 16:9], 30 fps, 30 tbr, 30 tbn, 30 tbc
+Stream mapping:
+  Stream #0:0 -> #0:0 (mjpeg (native) -> h264 (libx264))
+Press [q] to stop, [?] for help
+[swscaler @ 0x5ce4ddb26e80] deprecated pixel format used, make sure you did set range correctly
+[libx264 @ 0x5ce4dda5d740] using SAR=1/1
+[libx264 @ 0x5ce4dda5d740] using cpu capabilities: MMX2 SSE2Fast SSSE3 SSE4.2 AVX FMA3 BMI2 AVX2 AVX512
+[libx264 @ 0x5ce4dda5d740] profile High, level 4.0, 4:2:0, 8-bit
+[libx264 @ 0x5ce4dda5d740] 264 - core 163 r3060 5db6aa6 - H.264/MPEG-4 AVC codec - Copyleft 2003-2021 - http://www.videolan.org/x264.html - options: cabac=1 ref=3 deblock=1:0:0 analyse=0x3:0x113 me=hex subme=7 psy=1 psy_rd=1.00:0.00 mixed_ref=1 me_range=16 chroma_me=1 trellis=1 8x8dct=1 cqm=0 deadzone=21,11 fast_pskip=1 chroma_qp_offset=-2 threads=34 lookahead_threads=5 sliced_threads=0 nr=0 decimate=1 interlaced=0 bluray_compat=0 constrained_intra=0 bframes=3 b_pyramid=2 b_adapt=1 b_bias=0 direct=1 weightb=1 open_gop=0 weightp=2 keyint=250 keyint_min=25 scenecut=40 intra_refresh=0 rc_lookahead=40 rc=crf mbtree=1 crf=18.0 qcomp=0.60 qpmin=0 qpmax=69 qpstep=4 ip_ratio=1.40 aq=1:1.00
+Output #0, mp4, to 'output/uav_reconstruction_demo.mp4':
+  Metadata:
+    encoder         : Lavf58.76.100
+  Stream #0:0: Video: h264 (avc1 / 0x31637661), yuv420p(tv, bt470bg/unknown/unknown, progressive), 1920x1080 [SAR 1:1 DAR 16:9], q=2-31, 30 fps, 15360 tbn
+    Metadata:
+      encoder         : Lavc58.134.100 libx264
+    Side data:
+      cpb: bitrate max/min/avg: 0/0/0 buffer size: 0 vbv_delay: N/A
+frame=    1 fps=0.0 q=0.0 size=       0kB time=00:00:00.00 bitrate=N/A speed=N/A    frame=   26 fps=0.0 q=0.0 size=       0kB time=00:00:00.00 bitrate=N/A speed=   0x    frame=   50 fps= 48 q=0.0 size=       0kB time=00:00:00.00 bitrate=N/A speed=   0x    frame=   74 fps= 48 q=0.0 size=       0kB time=00:00:00.00 bitrate=N/A speed=   0x    frame=  109 fps= 53 q=24.0 size=     512kB time=00:00:00.93 bitrate=4494.0kbits/s speed=0.456x    frame=  148 fps= 58 q=24.0 size=    1280kB time=00:00:02.23 bitrate=4695.2kbits/s speed=0.874x    frame=  183 fps= 60 q=24.0 size=    2048kB time=00:00:03.40 bitrate=4934.5kbits/s speed=1.11x    frame=  219 fps= 61 q=24.0 size=    2560kB time=00:00:04.60 bitrate=4559.0kbits/s speed=1.28x    frame=  257 fps= 63 q=24.0 size=    3328kB time=00:00:05.86 bitrate=4647.1kbits/s speed=1.43x    frame=  292 fps= 63 q=24.0 size=    4096kB time=00:00:07.03 bitrate=4770.8kbits/s speed=1.53x    frame=  327 fps= 64 q=24.0 size=    4864kB time=00:00:08.20 bitrate=4859.3kbits/s speed= 1.6x    frame=  361 fps= 64 q=24.0 size=    5632kB time=00:00:09.33 bitrate=4943.3kbits/s speed=1.66x    frame=  395 fps= 65 q=24.0 size=    6656kB time=00:00:10.46 bitrate=5209.5kbits/s speed=1.71x    frame=  427 fps= 64 q=24.0 size=    7680kB time=00:00:11.53 bitrate=5455.0kbits/s speed=1.74x    frame=  461 fps= 65 q=24.0 size=    8448kB time=00:00:12.66 bitrate=5463.6kbits/s speed=1.78x    frame=  498 fps= 65 q=24.0 size=    9472kB time=00:00:13.90 bitrate=5582.3kbits/s speed=1.82x    frame=  532 fps= 65 q=24.0 size=   10240kB time=00:00:15.03 bitrate=5580.0kbits/s speed=1.85x    frame=  567 fps= 66 q=24.0 size=   10496kB time=00:00:16.20 bitrate=5307.6kbits/s speed=1.87x    frame=  602 fps= 66 q=24.0 size=   11008kB time=00:00:17.36 bitrate=5192.6kbits/s speed=1.89x    frame=  638 fps= 66 q=24.0 size=   11776kB time=00:00:18.56 bitrate=5195.8kbits/s speed=1.92x    frame=  675 fps= 66 q=24.0 size=   12288kB time=00:00:19.80 bitrate=5084.0kbits/s speed=1.95x    frame=  706 fps= 66 q=24.0 size=   12800kB time=00:00:20.83 bitrate=5033.2kbits/s speed=1.95x    frame=  743 fps= 66 q=24.0 size=   13312kB time=00:00:22.06 bitrate=4941.9kbits/s speed=1.97x    frame=  780 fps= 67 q=24.0 size=   13568kB time=00:00:23.30 bitrate=4770.3kbits/s speed=1.99x    frame=  820 fps= 67 q=24.0 size=   13568kB time=00:00:24.63 bitrate=4512.1kbits/s speed=2.02x    frame=  856 fps= 67 q=24.0 size=   13568kB time=00:00:25.83 bitrate=4302.5kbits/s speed=2.03x    frame=  897 fps= 68 q=24.0 size=   13568kB time=00:00:27.20 bitrate=4086.4kbits/s speed=2.06x    frame=  935 fps= 68 q=24.0 size=   13568kB time=00:00:28.46 bitrate=3904.5kbits/s speed=2.07x    frame=  975 fps= 69 q=24.0 size=   13568kB time=00:00:29.80 bitrate=3729.8kbits/s speed=2.09x    frame= 1014 fps= 69 q=24.0 size=   14336kB time=00:00:31.10 bitrate=3776.2kbits/s speed=2.11x    [mp4 @ 0x5ce4dda5c840] Starting second pass: moving the moov atom to the beginning of the file
+frame= 1020 fps= 68 q=-1.0 Lsize=   15467kB time=00:00:33.90 bitrate=3737.6kbits/s speed=2.24x    
+video:15454kB audio:0kB subtitle:0kB other streams:0kB global headers:0kB muxing overhead: 0.083494%
+[libx264 @ 0x5ce4dda5d740] frame I:7     Avg QP: 4.41  size: 66765
+[libx264 @ 0x5ce4dda5d740] frame P:273   Avg QP:16.91  size: 33365
+[libx264 @ 0x5ce4dda5d740] frame B:740   Avg QP:19.43  size:  8444
+[libx264 @ 0x5ce4dda5d740] consecutive B-frames:  2.1%  2.2%  4.4% 91.4%
+[libx264 @ 0x5ce4dda5d740] mb I  I16..4: 70.7% 24.9%  4.4%
+[libx264 @ 0x5ce4dda5d740] mb P  I16..4:  0.6%  1.3%  0.3%  P16..4:  6.6%  5.4%  4.3%  0.0%  0.0%    skip:81.5%
+[libx264 @ 0x5ce4dda5d740] mb B  I16..4:  0.1%  0.3%  0.0%  B16..8:  7.4%  1.9%  1.0%  direct: 2.3%  skip:86.9%  L0:48.6% L1:43.7% BI: 7.7%
+[libx264 @ 0x5ce4dda5d740] 8x8 transform intra:45.0% inter:45.5%
+[libx264 @ 0x5ce4dda5d740] coded y,uvDC,uvAC intra: 16.4% 14.7% 10.3% inter: 4.3% 2.0% 0.6%
+[libx264 @ 0x5ce4dda5d740] i16 v,h,dc,p: 86%  9%  5%  0%
+[libx264 @ 0x5ce4dda5d740] i8 v,h,dc,ddl,ddr,vr,hd,vl,hu: 16%  6% 62%  1%  4%  3%  3%  2%  3%
+[libx264 @ 0x5ce4dda5d740] i4 v,h,dc,ddl,ddr,vr,hd,vl,hu: 27% 17% 22%  5%  6%  7%  5%  5%  5%
+[libx264 @ 0x5ce4dda5d740] i8c dc,h,v,p: 79%  9% 11%  1%
+[libx264 @ 0x5ce4dda5d740] Weighted P-Frames: Y:9.9% UV:9.2%
+[libx264 @ 0x5ce4dda5d740] ref P L0: 56.2%  5.8% 23.4% 14.5%  0.1%
+[libx264 @ 0x5ce4dda5d740] ref B L0: 72.9% 19.9%  7.3%
+[libx264 @ 0x5ce4dda5d740] ref B L1: 91.2%  8.8%
+[libx264 @ 0x5ce4dda5d740] kb/s:3723.37
+[COMPOSE] done in 148.3s
+[ENCODE] ffmpeg -y -framerate 30 -i /data/luhangze/aic/code_demo/frames/final/final_%05d.jpg -c:v libx264 -preset medium -crf 18 -pix_fmt yuv420p -movflags +faststart output/uav_reconstruction_demo.mp4
+[DONE] output/uav_reconstruction_demo.mp4  (15.8 MB)

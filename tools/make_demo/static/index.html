@@ -1,0 +1,428 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="app-version" content="1000k">
+<title>AIC · 无人机城市重建与分割</title>
+<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>◈</text></svg>">
+<link rel="stylesheet" href="/static/style.css?v=1000k">
+<script type="importmap">
+{"imports": {"three": "/static/vendor/three.module.js", "three/addons/": "/static/vendor/addons/"}}
+</script>
+</head>
+<body>
+<div class="app">
+  <header class="topbar">
+    <div class="brand">
+      <div class="logo">◈</div>
+      <div class="brand-text">
+        <h1>UAV City Reconstruction</h1>
+        <p>SegStreamVGGT · 可交互三维重建与语义分割</p>
+      </div>
+    </div>
+    <div class="clip-picker">
+      <label for="clipSelect">场景</label>
+      <select id="clipSelect"></select>
+      <span class="status-dot" id="statusDot" title="服务状态"></span>
+    </div>
+    <div class="top-actions">
+      <button id="btnScenes" class="btn">场景管理</button>
+      <button id="btnNew" class="btn primary">＋ 新建重建</button>
+      <button id="btnScreenshot" class="btn">截图</button>
+      <button id="btnRecord" class="btn">录制视频</button>
+      <button id="btnHelp" class="btn icon" title="帮助 / 快捷键">?</button>
+    </div>
+  </header>
+
+  <main class="layout">
+    <!-- ======================= left controls ======================= -->
+    <aside class="sidebar left">
+      <section class="card">
+        <div class="card-head"><h2>航点进度</h2><span class="mono" id="progressText">0.0 / 0</span></div>
+        <input class="range" id="progress" type="range" min="0" max="1" step="0.001" value="0" disabled>
+        <div class="row gap wrap">
+          <button class="btn play" id="btnPlay" disabled><span id="playIcon">▶</span><span id="playText">播放</span></button>
+          <label class="toggle"><input type="checkbox" id="follow"><span class="track"></span>跟随</label>
+          <label class="toggle"><input type="checkbox" id="loop" checked><span class="track"></span>循环</label>
+        </div>
+        <div class="row gap">
+          <span class="label">速度</span>
+          <input class="range grow" id="speed" type="range" min="0.2" max="4" step="0.1" value="1.2">
+          <span class="mono w42" id="speedText">1.2×</span>
+        </div>
+        <div class="row gap">
+          <label class="toggle"><input type="checkbox" id="highlight"><span class="track"></span>高亮新增点</label>
+          <span class="spacer"></span>
+          <button class="btn tiny" id="btnResetView">重置视角</button>
+        </div>
+        <div class="row gap">
+          <label class="toggle"><input type="checkbox" id="recFollow"><span class="track"></span>录制时跟随航线</label>
+          <span class="dim" style="font-size:10px">默认全景环绕</span>
+        </div>
+      </section>
+
+      <section class="card">
+        <div class="card-head"><h2>显示</h2><span class="dim" id="modeHint">RGB 点云</span></div>
+        <div class="seg" id="modeSeg">
+          <button data-mode="rgb" class="active">RGB</button>
+          <button data-mode="seg">语义</button>
+          <button data-mode="both">双栏对比</button>
+        </div>
+        <div class="preset-row" id="viewPresets">
+          <button data-preset="oblique">斜视</button>
+          <button data-preset="top">俯视</button>
+          <button data-preset="street">沿街</button>
+          <button data-preset="orbit">环绕</button>
+        </div>
+        <div class="row gap" style="margin-top:9px">
+          <label class="toggle"><input type="checkbox" id="rgbPip" checked><span class="track"></span>显示 RGB 帧</label>
+          <span class="dim" style="font-size:10px">画中画 · 录制/截图会带上</span>
+        </div>
+        <div class="mini-hint">左键旋转 · 右键平移 · 滚轮缩放 · 双击拾取中心</div>
+      </section>
+
+      <section class="card">
+        <div class="card-head"><h2>点云外观</h2></div>
+        <label class="slider-row"><span>点大小</span><input class="range" id="pointSize" type="range" min="0.6" max="6" step="0.1" value="2.4"><b class="mono" id="pointSizeVal">2.4</b></label>
+        <label class="slider-row"><span>深度置信</span><input class="range" id="confMin" type="range" min="0" max="0.9" step="0.02" value="0"><b class="mono" id="confMinVal">0%</b></label>
+        <label class="slider-row"><span>分割置信</span><input class="range" id="probMin" type="range" min="0" max="0.95" step="0.02" value="0"><b class="mono" id="probMinVal">0%</b></label>
+      </section>
+
+      <section class="card grow">
+        <div class="card-head">
+          <h2>语义类别</h2>
+          <div class="row gap6"><button class="link" id="classAll">全选</button><button class="link" id="classNone">清空</button></div>
+        </div>
+        <div class="class-list" id="classList"></div>
+      </section>
+    </aside>
+
+    <!-- ======================= viewport ======================= -->
+    <section class="viewport" id="viewport">
+      <canvas id="view"></canvas>
+
+      <div class="stage-labels hidden" id="stageLabels"><span>RGB point cloud</span><span>Semantic point cloud</span></div>
+
+      <div class="hud hud-top">
+        <div class="chip" id="chipClip">未加载场景</div>
+        <div class="chip" id="chipPoints">—</div>
+        <div class="chip" id="chipFps">—</div>
+      </div>
+
+      <div class="hud hud-bottom" id="hint">拖拽旋转 · 滚轮缩放 · 空格播放</div>
+
+      <div class="rec-badge hidden" id="recBadge" title="点击停止录制">● REC <b id="recTime">0.0s</b></div>
+
+      <div class="loading" id="loading">
+        <div class="spinner"></div>
+        <div class="loading-title" id="loadingText">正在连接服务…</div>
+        <div class="bar"><i id="loadingBar"></i></div>
+        <div class="loading-sub" id="loadingSub"></div>
+      </div>
+
+      <div class="empty-state hidden" id="empty">
+        <div class="empty-icon">◈</div>
+        <h3>还没有可交互的重建场景</h3>
+        <p>上传一段无人机视频，或选择一个服务器上的帧目录来生成。</p>
+        <button class="btn primary" id="emptyNew">新建重建</button>
+      </div>
+    </section>
+
+    <!-- ======================= right panel ======================= -->
+    <aside class="sidebar right">
+      <section class="card uav-card">
+        <div class="card-head"><h2>无人机视角</h2><span class="mono" id="uavIndex">—</span></div>
+        <div class="uav-img-wrap"><img id="uavImg" alt="UAV view"><div class="uav-empty" id="uavEmpty">—</div></div>
+        <div class="uav-meta"><span id="uavName">—</span><span class="dim" id="uavHint">航点原图</span></div>
+      </section>
+
+      <section class="card">
+        <div class="card-head"><h2>航线俯视</h2><span class="dim">点击 / 拖动跳转</span></div>
+        <canvas id="minimap" width="560" height="380"></canvas>
+      </section>
+
+      <section class="card">
+        <div class="card-head"><h2>航点</h2><div class="row gap6"><span class="mono" id="wpCount">0</span><button class="link" id="btnGallery">全部帧</button></div></div>
+        <div class="filmstrip" id="filmstrip"></div>
+      </section>
+
+      <section class="card">
+        <div class="card-head"><h2>场景信息</h2></div>
+        <dl class="stats" id="stats"><dt>状态</dt><dd>未加载</dd></dl>
+        <div class="row gap6 wrap">
+          <a class="btn tiny" id="btnPlyRgb" href="#" download>PLY · RGB</a>
+          <a class="btn tiny" id="btnPlySeg" href="#" download>PLY · 语义</a>
+          <button class="btn tiny" id="btnRebuildClip" title="用原始输入和参数重新重建当前场景">重新重建</button>
+          <button class="btn tiny ghost" id="btnDeleteClip" title="删除当前场景">删除场景</button>
+        </div>
+      </section>
+    </aside>
+  </main>
+</div>
+
+<!-- ======================= new reconstruction modal ======================= -->
+<div class="modal hidden" id="modal" aria-hidden="true">
+  <div class="sheet">
+    <header class="sheet-head">
+      <div>
+        <h2>新建重建</h2>
+        <p>从视频、图片或服务器帧目录生成一个新的交互片段。推理在后台进行，同一时间只跑一个 GPU 任务。</p>
+      </div>
+      <button class="btn icon" id="modalClose">✕</button>
+    </header>
+
+    <div class="tabs" id="srcTabs">
+      <button data-tab="video" class="active">上传视频</button>
+      <button data-tab="images">上传图片</button>
+      <button data-tab="frames">服务器帧目录</button>
+    </div>
+
+    <div class="sheet-body">
+      <!-- video -->
+      <section class="tab-panel active" data-panel="video">
+        <label class="dropzone" id="videoDrop">
+          <input type="file" id="videoInput" accept="video/mp4,video/quicktime,video/x-matroska,video/webm,video/*" hidden>
+          <div class="drop-icon">🎬</div>
+          <div class="drop-title">点击或拖入无人机视频</div>
+          <div class="drop-sub">MP4 / MOV / MKV / WebM · 上传后自动抽取候选航点帧</div>
+        </label>
+        <div class="row gap wrap pickbar hidden" id="videoPickbar">
+          <span>已选 <b id="videoSelCount">0</b> 帧</span>
+          <span class="dim">· 视频共 <b id="videoTotalFrames">—</b> 帧</span>
+          <span class="dim">· 预览 <span id="videoCandCount">0</span> 个候选</span>
+          <span class="spacer"></span>
+          <label class="inline">均匀选择 <input class="input tiny-input" id="videoPickN" type="number" value="16" min="2" max="1000"> 帧</label>
+          <button class="btn tiny" id="videoPickEven">应用</button>
+          <button class="btn tiny ghost" id="videoPickNone">清空</button>
+        </div>
+        <div class="pick-note" id="videoSelSummary">上传后可按视频总帧数均匀选择 2–1000 帧；单次推理按分辨率限帧（392×700 约 32 帧 / 518×924 约 19 帧），超出会均匀降采样。缩略图只预览前 20 个候选。</div>
+        <div class="upload-status hidden" id="videoUploadStatus"><div class="bar"><i id="videoUploadBar"></i></div><span id="videoUploadText"></span></div>
+        <video id="videoPreview" class="video-preview hidden" controls preload="metadata"></video>
+        <div class="thumb-grid" id="videoCandidates"></div>
+      </section>
+
+      <!-- images -->
+      <section class="tab-panel" data-panel="images">
+        <label class="dropzone" id="imagesDrop">
+          <input type="file" id="imagesInput" accept="image/*" multiple hidden>
+          <div class="drop-icon">🖼</div>
+          <div class="drop-title">点击或拖入图片序列</div>
+          <div class="drop-sub">多选 PNG / JPG，按文件名排序作为航点</div>
+        </label>
+        <div class="row gap wrap pickbar hidden" id="imagesPickbar">
+          <span>已选 <b id="imagesSelCount">0</b> / <span id="imagesTotalCount">0</span> 张</span>
+          <span class="spacer"></span>
+          <button class="btn tiny" id="imagesPickAll">全选</button>
+          <button class="btn tiny ghost" id="imagesPickNone">清空</button>
+        </div>
+        <div class="upload-status hidden" id="imagesUploadStatus"><div class="bar"><i id="imagesUploadBar"></i></div><span id="imagesUploadText"></span></div>
+        <div class="thumb-grid" id="imagesGrid"></div>
+      </section>
+
+      <!-- server frames -->
+      <section class="tab-panel" data-panel="frames">
+        <div class="row gap">
+          <input class="input grow" id="framePath" placeholder="/data/luhangze/aic/demo/city2_seq/frames_route">
+          <button class="btn" id="frameGo">浏览</button>
+        </div>
+        <div class="preset-row" id="framePresets"></div>
+        <div class="row gap wrap pickbar">
+          <span class="dim" id="frameDirInfo">—</span>
+          <span>已选 <b id="frameSelCount">0</b></span>
+          <span class="spacer"></span>
+          <button class="btn tiny" id="framePickAll">全选当前</button>
+          <button class="btn tiny ghost" id="framePickNone">清空</button>
+        </div>
+        <div class="breadcrumb" id="frameDirs"></div>
+        <div class="thumb-grid" id="frameImages"></div>
+      </section>
+
+      <!-- params -->
+      <section class="params">
+        <h3>参数</h3>
+        <div class="grid2">
+          <label>片段名称<input class="input" id="optLabel" placeholder="例如：city2 航迹"></label>
+          <label>输入分辨率
+            <select class="input" id="optSize">
+              <option value="392x700">392×700 · 横屏快（推荐）</option>
+              <option value="518x924">518×924 · 横屏高清（更慢）</option>
+              <option value="700x392">700×392 · 竖屏快</option>
+              <option value="924x518">924×518 · 竖屏高清</option>
+            </select>
+          </label>
+          <label>最大点数
+            <select class="input" id="optPoints">
+              <option value="1000000">1.0 M</option>
+              <option value="1500000" selected>1.5 M</option>
+              <option value="2500000">2.5 M</option>
+              <option value="4000000">4.0 M</option>
+            </select>
+          </label>
+          <label>深度置信分位（丢弃最低比例）
+            <input class="input" id="optConf" type="number" step="0.05" min="0" max="0.9" value="0.10">
+          </label>
+        </div>
+        <details>
+          <summary>高级参数</summary>
+          <div class="grid2">
+            <label>语义概率阈值<input class="input" id="optSegThresh" type="number" step="0.05" min="0" max="0.95" value="0"></label>
+            <label>新增点最小距离<input class="input" id="optMinDist" type="number" step="0.05" min="0" value="0.15"></label>
+            <label class="check-row"><input id="optDropSky" type="checkbox" checked> 去除天空 / 未标注</label>
+            <label>几何来源
+              <select class="input" id="optPointSource">
+                <option value="depth">depth + pose 反投影（推荐）</option>
+                <option value="point">point head world_points</option>
+              </select>
+            </label>
+          </div>
+        </details>
+      </section>
+    </div>
+
+    <footer class="sheet-foot">
+      <div class="dim" id="modalHint">选择至少 2 个航点</div>
+      <div class="row gap">
+        <button class="btn ghost" id="modalCancel">取消</button>
+        <button class="btn primary" id="modalSubmit">开始重建</button>
+      </div>
+    </footer>
+  </div>
+</div>
+
+<!-- ======================= job panel ======================= -->
+<div class="job-panel hidden" id="jobPanel">
+  <div class="job-head">
+    <div class="spinner small"></div>
+    <div class="job-title-wrap"><b id="jobTitle">重建中…</b><div class="dim" id="jobMsg">排队中</div></div>
+    <button class="btn icon" id="jobToggle" title="展开/收起日志">⌃</button>
+  </div>
+  <div class="bar"><i id="jobBar"></i></div>
+  <pre class="job-log" id="jobLog"></pre>
+  <div class="row gap"><button class="btn tiny danger" id="jobCancel">取消任务</button><span class="dim" id="jobFoot"></span></div>
+</div>
+
+
+<!-- ======================= scene manager ======================= -->
+<div class="modal hidden" id="scenesModal" aria-hidden="true">
+  <div class="sheet">
+    <header class="sheet-head">
+      <div>
+        <h2>场景管理</h2>
+        <p>管理已重建的场景。删除会移除该场景的点云缓存，原始上传/输入保留；重新重建会基于原 source 和参数创建一个新场景，旧场景不会被覆盖。</p>
+      </div>
+      <button class="btn icon" id="scenesClose">✕</button>
+    </header>
+    <div class="sheet-body">
+      <div class="scene-toolbar">
+        <span class="mono" id="sceneCount">0 个场景</span>
+        <span class="dim">删除不可恢复 · 重建任务在后台排队</span>
+        <button class="btn tiny ghost" id="sceneRefresh">刷新</button>
+      </div>
+      <div class="scene-list" id="sceneList"></div>
+    </div>
+  </div>
+</div>
+
+<!-- ======================= RGB frame gallery ======================= -->
+<div class="modal hidden" id="galleryModal" aria-hidden="true">
+  <div class="sheet">
+    <header class="sheet-head">
+      <div><h2>RGB 帧序列</h2><p>每个航点对应的原始 RGB 帧。点击任意一帧跳到该航点，点云会同步显示到该阶段。</p></div>
+      <button class="btn icon" id="galleryClose">✕</button>
+    </header>
+    <div class="sheet-body">
+      <div class="gallery-grid" id="galleryGrid"></div>
+    </div>
+  </div>
+</div>
+
+<!-- ======================= help modal ======================= -->
+<div class="modal hidden" id="helpModal" aria-hidden="true">
+  <div class="sheet narrow">
+    <header class="sheet-head">
+      <div><h2>操作说明</h2><p>所有视角与渲染参数都在浏览器里实时可调，不需要重新推理。</p></div>
+      <button class="btn icon" id="helpClose">✕</button>
+    </header>
+    <div class="sheet-body help-body">
+      <h3>视角</h3>
+      <ul>
+        <li><b>左键拖拽</b> 旋转，<b>右键拖拽</b> 平移，<b>滚轮</b> 缩放，<b>双击</b> 把旋转中心放到点云上。</li>
+        <li><b>斜视 / 俯视 / 沿街</b> 预设适合城市演示；<b>环绕</b> 自动旋转。</li>
+        <li><b>跟随</b> 让相机沿预测航迹飞行，形成无人机视角的巡检动画。</li>
+      </ul>
+      <h3>时间轴</h3>
+      <ul>
+        <li>拖动顶部滑杆或点击右侧航点缩略图，查看任意航点完成时的重建结果。</li>
+        <li>播放时新航点的点云按“近→远”逐步补全，黄色高亮当前新增区域。</li>
+      </ul>
+      <h3>显示</h3>
+      <ul>
+        <li>RGB / 语义 / 双栏对比；类别可单独开关；深度置信和分割置信可实时过滤。</li>
+        <li>点大小可调；截图导出当前视角；录制视频默认全景环绕（可勾选跟随航线），右上角 RGB 画中画会一起录进 WebM。</li>
+      </ul>
+      <h3>场景管理</h3>
+      <ul>
+        <li>右上角 <b>场景管理</b> 可以打开、删除或基于原输入重新重建任意已建场景。</li>
+        <li><b>删除</b> 只移除该场景的点云缓存，原始上传视频/图片保留；<b>重建</b> 会创建新场景，旧场景不覆盖。</li>
+      </ul>
+      <h3>视频选帧</h3>
+      <ul>
+        <li><b>均匀选择</b> 支持 2–1000 帧，按视频总帧数生成索引；左上角缩略图只预览 20 个候选，提交时按索引重新抽帧。</li>
+        <li>模型单次全局 attention 有显存上限：392×700 约 32 帧、518×924 约 19 帧；超出会先均匀降采样，避免 OOM。</li>
+        <li>选 1000 帧只代表覆盖整段视频，不代表一次推理 1000 帧；常规演示建议 16–32 帧。</li>
+      </ul>
+      <h3>快捷键</h3>
+      <div class="kbd-grid">
+        <span><kbd>空格</kbd> 播放 / 暂停</span>
+        <span><kbd>←</kbd> <kbd>→</kbd> 前后 1 个航点</span>
+        <span><kbd>1</kbd> RGB</span>
+        <span><kbd>2</kbd> 语义</span>
+        <span><kbd>3</kbd> 双栏</span>
+        <span><kbd>F</kbd> 跟随视角</span>
+        <span><kbd>R</kbd> 重置视角</span>
+        <span><kbd>?</kbd> 本帮助</span>
+      </div>
+      <h3>说明</h3>
+      <p class="dim">几何来自冻结的 StreamVGGT depth/camera head，语义来自 SegStreamVGGT v5 query 头；分割颜色是模型预测，不是 GT。点云用于定性展示，未做 TSDF/位姿优化。</p>
+    </div>
+  </div>
+</div>
+
+<div id="toasts" class="toasts"></div>
+
+<script>
+(function () {
+  window.__DEMO_CONNECTED = false;
+  function bootError(msg) {
+    if (window.__DEMO_CONNECTED) return;
+    const title = document.querySelector('#loadingText');
+    const sub = document.querySelector('#loadingSub');
+    const bar = document.querySelector('#loadingBar');
+    if (title) title.textContent = '页面初始化失败';
+    if (sub) {
+      sub.textContent = (msg || '未知错误') + ' · 请刷新页面';
+      sub.appendChild(document.createTextNode(' '));
+      const b = document.createElement('button');
+      b.className = 'btn tiny';
+      b.textContent = '重新加载';
+      b.style.marginLeft = '8px';
+      b.onclick = () => location.reload();
+      sub.appendChild(b);
+    }
+    if (bar) bar.style.width = '100%';
+  }
+  window.addEventListener('error', (e) => bootError(e.message || e.error));
+  window.addEventListener('unhandledrejection', (e) => {
+    const r = e.reason;
+    bootError((r && (r.message || r.toString())) || '未处理的 Promise 拒绝');
+  });
+  setTimeout(() => {
+    if (!window.__DEMO_CONNECTED) bootError('连接服务超时，请刷新页面');
+  }, 12000);
+})();
+</script>
+
+<script type="module" src="/static/app.js?v=1000k"></script>
+</body>
+</html>

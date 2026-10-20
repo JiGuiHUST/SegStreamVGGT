@@ -1,0 +1,8 @@
+# Web UI / backend extras (the model itself needs torch + the SegStreamVGGT repo)
+fastapi>=0.110
+uvicorn[standard]>=0.27
+python-multipart>=0.0.9
+Pillow>=9
+numpy>=1.24
+scipy>=1.10
+# optional: open3d or trimesh for the legacy batch PLY writer

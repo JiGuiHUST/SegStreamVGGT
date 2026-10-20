@@ -1,0 +1,28 @@
+# 训练产物 / 数据 / 权重（体积大，不入库）
+logs_*/
+cache/
+aic_data/
+spotcheck/*.tmp
+*.pth
+*.pt
+*.ply
+
+# Python
+__pycache__/
+*.py[cod]
+*.egg-info/
+.ipynb_checkpoints/
+
+# demo 素材与中间产物
+demo/clips/
+demo/372124/
+demo/output/frames/
+tools/make_demo/data/
+tools/make_demo/logs/
+tools/code_demo/frames/
+tools/code_demo/__pycache__/
+
+# 编辑器 / 系统
+.DS_Store
+.vscode/
+.idea/
