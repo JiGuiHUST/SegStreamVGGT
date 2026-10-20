@@ -12,7 +12,7 @@
 的基础上，模仿 [SegVGGT](https://github.com/IDEA-Research/SegVGGT) 的结构，用 **object query**
 对 `/data1/luhangze/AIC/` 下 **7 个航拍/无人机语义分割数据集** 做统一闭集（AIC-11）的语义分割训练。
 
-> **一句话**：冻结 StreamVGGT 主干 → 学习 100 个 object query 逐层 cross-attend 到几何 token →
+> **简要概括**：冻结 StreamVGGT 主干 → 学习 100 个 object query 逐层 cross-attend 到几何 token →
 > query 与 dense feature 点积得到 per-query mask + query 分类 → Mask2Former 式组合成逐像素语义概率；
 > 只训练 query 分支（54.8M / 963.9M = 5.7%）。
 
@@ -22,6 +22,7 @@
 > 📄 **改进与创新的技术总结见 [TECHNICAL_NOTES.md](TECHNICAL_NOTES.md)**（含 query 塔缩的诊断与修复、多帧 tile-grid、
 > 部分标签屏蔽、分阶段课程、crop 预算 epoch、dstl 16-bit TIFF 修正等 8 项改进的动机/实现/实测证据）。
 
+> **证书说明**使用的StreamVGGT代码为BY-NC-SA 4.0协议.
 ---
 
 ## 目录
