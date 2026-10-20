@@ -1,3 +1,11 @@
+<p align="center">
+  <img src="assets/demo1.gif" alt="SegStreamVGGT: UAV 序列的流式 3D 重建（左）与 Query 语义分割（右）" width="100%">
+  <br>
+  <sub><b>Streaming 3D reconstruction (left) + query-based semantic segmentation (right) on UAV video.</b></sub>
+</p>
+
+---
+
 # SegStreamVGGT: 多个航拍数据集的 Query 语义分割
 
 在 [StreamVGGT](https://github.com/wzzheng/StreamVGGT)（ICLR 2026 *Streaming 4D Visual Geometry Transformer*）
